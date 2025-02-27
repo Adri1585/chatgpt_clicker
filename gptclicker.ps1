@@ -17,11 +17,21 @@ public class Clicker {
     private const int DELAY = 1000 / CLICKS_PER_SECOND;
 
     public static void ClickLoop() {
-        while ((GetAsyncKeyState(KEY_V) & 0x8000) == 0) {
-            mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, UIntPtr.Zero);
-            Thread.Sleep(10);
-            mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, UIntPtr.Zero);
-            Thread.Sleep(DELAY);
+        bool running = false;
+
+        while (true) {
+            if ((GetAsyncKeyState(KEY_V) & 0x8000) != 0) {
+                running = !running;
+                Console.WriteLine(running ? "AutoClicker ACTIVADO" : "AutoClicker DESACTIVADO");
+                System.Threading.Thread.Sleep(300); // Pequeño delay para evitar múltiples activaciones
+            }
+
+            if (running) {
+                mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, UIntPtr.Zero);
+                Thread.Sleep(10);
+                mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, UIntPtr.Zero);
+                Thread.Sleep(DELAY);
+            }
         }
     }
 }
