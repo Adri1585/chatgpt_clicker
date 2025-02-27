@@ -20,17 +20,20 @@ public class Clicker {
         bool running = false;
 
         while (true) {
-            if ((GetAsyncKeyState(KEY_V) & 0x8000) != 0) {
+            // Detecta si la tecla "V" se presionó para alternar el estado
+            if ((GetAsyncKeyState(KEY_V) & 0x01) != 0) {
                 running = !running;
                 Console.WriteLine(running ? "AutoClicker ACTIVADO" : "AutoClicker DESACTIVADO");
-                System.Threading.Thread.Sleep(300); // Pequeño delay para evitar múltiples activaciones
             }
 
+            // Si está activo, genera clics
             if (running) {
                 mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, UIntPtr.Zero);
                 Thread.Sleep(10);
                 mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, UIntPtr.Zero);
                 Thread.Sleep(DELAY);
+            } else {
+                Thread.Sleep(50); // Pequeña espera para reducir uso de CPU cuando está inactivo
             }
         }
     }
