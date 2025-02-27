@@ -3,7 +3,8 @@ title AutoClicker 15 CPS
 color 0A
 echo AutoClicker Iniciado
 echo Presiona V para detenerlo.
-powershell -Command "& {Add-Type -TypeDefinition @'
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+"& {Add-Type -TypeDefinition @'
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -30,7 +31,5 @@ public class Clicker {
         }
     }
 }
-'@ -Language CSharp
-[Clicker]::ClickLoop()
-}"
+'@ -Language CSharp; [Clicker]::ClickLoop();}"
 exit
