@@ -1,19 +1,13 @@
-@echo off
-title AutoClicker 15 CPS
-color 0A
-echo AutoClicker Iniciado
-echo Presiona V para detenerlo.
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-"& {Add-Type -TypeDefinition @'
+Add-Type @"
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
 public class Clicker {
-    [DllImport(\"user32.dll\", SetLastError = true)]
+    [DllImport("user32.dll", SetLastError = true)]
     public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint dwData, UIntPtr dwExtraInfo);
     
-    [DllImport(\"user32.dll\")]
+    [DllImport("user32.dll")]
     public static extern short GetAsyncKeyState(int vKey);
     
     private const uint MOUSEEVENTF_LEFTDOWN = 0x02;
@@ -31,5 +25,6 @@ public class Clicker {
         }
     }
 }
-'@ -Language CSharp; [Clicker]::ClickLoop();}"
-exit
+"@ -Language CSharp
+
+[Clicker]::ClickLoop()
