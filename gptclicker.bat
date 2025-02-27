@@ -1,25 +1,19 @@
 @echo off
-title AutoClicker 15 CPS
-color 0A
-echo AutoClicker Iniciado
-echo Presiona V para activar/desactivar.
-echo Cierra esta ventana para salir.
+setlocal EnableDelayedExpansion
 
-:: Crea el script VBScript para manejar los clics
-echo Set WshShell = CreateObject("WScript.Shell") > autoclicker.vbs
-echo active = False >> autoclicker.vbs
-echo Do >> autoclicker.vbs
-echo     If WshShell.AppActivate("AutoClicker 15 CPS") Then >> autoclicker.vbs
-echo         If WshShell.SendKeys("^V") Then active = Not active >> autoclicker.vbs
-echo         If active Then >> autoclicker.vbs
-echo             WshShell.SendKeys("^{LEFT}") >> autoclicker.vbs
-echo             WScript.Sleep 67 >> autoclicker.vbs
-echo         Else >> autoclicker.vbs
-echo             WScript.Sleep 100 >> autoclicker.vbs
-echo         End If >> autoclicker.vbs
-echo     End If >> autoclicker.vbs
-echo Loop >> autoclicker.vbs
+:: Configuración
+echo AutoClicker en .bat iniciado
+set "intervalo=100"
+set "tecla=F6"
 
-:: Ejecuta el script en segundo plano
-start /min wscript.exe autoclicker.vbs
-exit
+:: Cargar librerías necesarias
+powershell -Command "Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public class Click{[DllImport(\"user32.dll\",CharSet=CharSet.Auto,SetLastError=true)]public static extern void mouse_event(int dwFlags,int dx,int dy,int dwData,int dwExtraInfo);public static void LeftClick(){mouse_event(0x02,0,0,0,0);mouse_event(0x04,0,0,0,0);}}' -Language CSharp -PassThru | Out-Null"
+
+echo Presiona %tecla% para iniciar/detener el autoclicker
+
+timeout /t 2 >nul
+
+:inicio
+powershell -Command "$global:run=$true;while($global:run){[Click]::LeftClick();Start-Sleep -Milliseconds %intervalo%}" | powershell -Command "while($true){if((Get-AsyncKeyState 0x75) -ne 0){$global:run=!$global:run}}"
+
+goto inicio
